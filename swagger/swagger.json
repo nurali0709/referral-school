@@ -1,0 +1,247 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Referral Program API",
+      "version": "1.0.0",
+      "description": "API for managing a referral program."
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local server"
+      }
+    ],
+    "paths": {
+      "/referrer/generate-invite": {
+        "post": {
+          "summary": "Generate a referral invite link",
+          "tags": ["Referrer"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    }
+                  },
+                  "required": ["name"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successfully generated referral link",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "inviteLink": {
+                        "type": "string",
+                        "example": "http://localhost:3000/register?ref=abc123"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/referrer/stats/{referrerId}": {
+        "get": {
+          "summary": "Get referral statistics",
+          "tags": ["Referrer"],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "referrerId",
+              "schema": {
+                "type": "string"
+              },
+              "required": true,
+              "description": "The ID of the referrer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Referral statistics",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "referrerName": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "totalInvited": {
+                        "type": "integer",
+                        "example": 5
+                      },
+                      "invitedStudents": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string",
+                              "example": "Jane Doe"
+                            },
+                            "email": {
+                              "type": "string",
+                              "example": "jane.doe@example.com"
+                            },
+                            "lessons": {
+                              "type": "integer",
+                              "example": 8
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/student/register": {
+        "post": {
+          "summary": "Register a student using a referral code",
+          "tags": ["Student"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "Jane Doe"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+123456789"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "jane.doe@example.com"
+                    },
+                    "ref": {
+                      "type": "string",
+                      "example": "abc123"
+                    }
+                  },
+                  "required": ["name", "phone", "email", "ref"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Registration successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Registration successful"
+                      },
+                      "studentId": {
+                        "type": "integer",
+                        "example": 1
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid referral code",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string",
+                        "example": "Invalid referral code"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/student/payment": {
+        "post": {
+          "summary": "Process a payment and add lessons",
+          "tags": ["Student"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "studentId": {
+                      "type": "integer",
+                      "example": 1
+                    }
+                  },
+                  "required": ["studentId"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Payment processed and lessons added",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Payment processed and lessons added"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Student not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string",
+                        "example": "Student not found"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
