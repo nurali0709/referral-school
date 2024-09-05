@@ -1,4 +1,5 @@
 const { Student, Referrer } = require('../models');
+const redis = require('../config/redis');
 
 exports.registerStudent = async (req, res, next) => {
   try {
@@ -33,6 +34,8 @@ exports.processPayment = async (req, res, next) => {
     if (referrer) {
       referrer.lessons = (referrer.lessons || 0) + 1;
       await referrer.save();
+
+      await redis.del(`referrerStats:${referrer.id}`);
     }
 
     res.json({ message: 'Payment processed and lessons added' });
